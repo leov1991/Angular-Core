@@ -1,0 +1,30 @@
+<h2>Listado de productos</h2>
+
+<button [routerLink]='["/products-new"]' class="btn btn-primary">Nuevo producto</button>
+
+<p *ngIf="!(productsList && productsList.length)">
+  No existen productos para mostrar.
+</p>
+<br /><br />
+<small>Chequear versiñon Bootstrap que no pone cabeceras de tabla en negrita</small>
+
+<br /><br />
+<table class="table" *ngIf="(productsList && productsList.length)">
+  <thead>
+    <tr>
+      <td>Nombre</td>
+      <td>Descripción</td>
+      <td>Acciones</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let prod of productsList">
+      <td>{{prod.name}}</td>
+      <td>{{prod.description}}</td>
+      <td>
+        <button class="btn btn-primary" [routerLink]='["/products-edit/"+ prod.id]'>Editar</button>
+        <button (click)="delete(prod)" class="btn btn-danger">Borrar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
