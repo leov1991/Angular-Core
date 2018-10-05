@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -12,6 +12,15 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductsService } from './products/products.service';
 import { ProductsFormComponent } from './products/products-form/products-form.component';
+import { LogInterceptorService } from './services/log-interceptor.service';
+import { RegisterComponent } from './account/register/register.component';
+import { AuthGuardService } from './services/auth-guard.service';
+import { AccountService } from './account/account.service';
+import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { CartComponent } from './cart/cart.component';
+import { CheckoutComponent } from './checkout/checkout.component';
+import { OrderComponent } from './order/order.component';
+import { CartService } from './cart/cart.service';
 
 @NgModule({
   declarations: [
@@ -21,7 +30,11 @@ import { ProductsFormComponent } from './products/products-form/products-form.co
     CounterComponent,
     FetchDataComponent,
     ProductsComponent,
-    ProductsFormComponent
+    ProductsFormComponent,
+    RegisterComponent,
+    CartComponent,
+    CheckoutComponent,
+    OrderComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -32,13 +45,31 @@ import { ProductsFormComponent } from './products/products-form/products-form.co
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'products', component: ProductsComponent },
+
+      // Adding authorization to this component
+      { path: 'products', component: ProductsComponent, canActivate: [AuthGuardService] },
       { path: 'products-new', component: ProductsFormComponent },
-      { path: 'products-edit/:id', component: ProductsFormComponent }
+      { path: 'products-edit/:id', component: ProductsFormComponent },
+      { path: 'register-login', component: RegisterComponent },
+      { path: 'checkout', component: CheckoutComponent }
 
     ])
   ],
-  providers: [ProductsService],
+  providers: [ProductsService,
+    AuthGuardService,
+    CartService,
+    AccountService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LogInterceptorService,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

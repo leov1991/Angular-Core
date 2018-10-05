@@ -5,25 +5,27 @@
 <p *ngIf="!(productsList && productsList.length)">
   No existen productos para mostrar.
 </p>
-<br /><br />
-<small>Chequear versiñon Bootstrap que no pone cabeceras de tabla en negrita</small>
 
 <br /><br />
-<table class="table" *ngIf="(productsList && productsList.length)">
+
+<table class="table table-hover" *ngIf="(productsList && productsList.length)">
   <thead>
     <tr>
-      <td>Nombre</td>
-      <td>Descripción</td>
-      <td>Acciones</td>
+      <th>Nombre</th>
+      <th>Descripción</th>
+      <th>Precio</th>
+      <th>Acciones</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let prod of productsList">
       <td>{{prod.name}}</td>
       <td>{{prod.description}}</td>
+      <td>{{prod.price | currency:'USD':"symbol"}}</td>
       <td>
         <button class="btn btn-primary" [routerLink]='["/products-edit/"+ prod.id]'>Editar</button>
         <button (click)="delete(prod)" class="btn btn-danger">Borrar</button>
+        <button class="btn btn-success" (click)="addProduct(prod)">Agregar al carrito</button>
       </td>
     </tr>
   </tbody>

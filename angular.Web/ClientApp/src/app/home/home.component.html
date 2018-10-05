@@ -1,14 +1,39 @@
-<h1>Hello, world!</h1>
-<p>Welcome to your new single-page application, built with:</p>
+<h1><strong>Angular + .NET Core <span class="glyphicon glyphicon-star text-gold"> </span></strong></h1>
+<hr />
+<strong>Funcionalidades actuales:</strong>
 <ul>
-  <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-  <li><a href='https://angular.io/'>Angular</a> and <a href='http://www.typescriptlang.org/'>TypeScript</a> for client-side code</li>
-  <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
+  <li>Login/Logout.</li>
+  <li>Registro.</li>
+  <li>Implementación de tokens para el control de accesos. Si el usuario no está logueado no puede acceder realizar ciertas acciones.</li>
+  <li>Listado y ABM de productos.</li>
+  <li>Carrito de compras (sólo front-end)</li>
 </ul>
-<p>To help you get started, we've also set up:</p>
+<hr />
+
+<strong>TO DO List:</strong>
 <ul>
-  <li><strong>Client-side navigation</strong>. For example, click <em>Counter</em> then <em>Back</em> to return here.</li>
-  <li><strong>Angular CLI integration</strong>. In development mode, there's no need to run <code>ng serve</code>. It runs in the background automatically, so your client-side resources are dynamically built on demand and the page refreshes when you modify any file.</li>
-  <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and your <code>dotnet publish</code> configuration automatically invokes <code>ng build</code> to produce minified, ahead-of-time compiled JavaScript files.</li>
+  <li>Barra de navegación arriba. <span class='glyphicon glyphicon-ok text-green'></span></li>
+  <li>Footer + página contacto. <span class='glyphicon glyphicon-ok text-green'></span></li>
+  <li>Separar login y registro en formularios distintos <span class='glyphicon glyphicon-ok text-green'></span></li>
+  <li>Front page con búsqueda y paginación <span class='glyphicon glyphicon-remove text-red'></span></li>
+  <li>Implementar <code>carrito de compras</code> con componentes Angular. (debuggear, pierdo data en reload) <span class='glyphicon glyphicon-ok text-green'></span></li>
+  <li>Mientras no haya roles, el pedido puede realizarse llenando datos en un formulario que el administrador recibe.  <span class='glyphicon glyphicon-ok text-green'></span></li>
+  <li><code>Envío y recepción de mails</code> (comunicarse con persona que realizó pedido vía mailto:) <span class='glyphicon glyphicon-remove text-red'></span></li>
+  <li>
+    Roles de acceso:  <span class='glyphicon glyphicon-ok text-green'></span>
+    <ul>
+      <li><code>Administradores</code> pueden hacer ABM de productos, categorías, stock, whatever y potencialmente ver estadísticas. sobre pedidos, productos y clientes.</li>
+      <li><code>Usuarios registrados</code> pueden comprar desde el carrito. Tal vez podrían tener una sección con sus pedidos realizados y el estado de cada uno.</li>
+      <li><code>Usuarios anónimos</code> pueden ver lista/detalle de productos y agregarlos al carrito de compras. Deberán registrarse para poder comprar.</li>
+    </ul>
+  </li>
+  <li><code>Pagos online</code> la implementación es más compleja porque puede depender de cada entidad/banco y su API. <span class='glyphicon glyphicon-remove text-red'></span></li>
+  <li>Personalizar interfaz, por el momento usando Bootstrap básico. Usar theme o Material Design. <span class='glyphicon glyphicon-ok text-green'></span></li>
 </ul>
-<p>The <code>ClientApp</code> subdirectory is a standard Angular CLI application. If you open a command prompt in that directory, you can run any <code>ng</code> command (e.g., <code>ng test</code>), or use <code>npm</code> to install extra packages into it.</p>
+<hr />
+<p>
+  <span class='glyphicon glyphicon-ok text-green'></span> <small><strong>Puede hacerse</strong></small>
+</p>
+<p>
+  <span class='glyphicon glyphicon-remove text-red'></span> <small><strong>Investigar</strong></small>
+</p>

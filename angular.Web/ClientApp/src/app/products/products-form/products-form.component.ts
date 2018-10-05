@@ -31,7 +31,7 @@ export class ProductsFormComponent implements OnInit {
       description: ''
     });
 
-    //Definir parametros para las rutas activadas (por ejemplo links edit y delete)
+    //Definir parámetros para las rutas activadas (por ejemplo links edit y delete)
     this.activatedRoute.params.subscribe(params => {
       if (params["id"] == undefined) {
         return;
@@ -40,7 +40,8 @@ export class ProductsFormComponent implements OnInit {
       this.editMode = true;
       this.productId = params["id"];
 
-      this.productsSersvice.getProductById(this.productId.toString()).subscribe(product => this.loadForm(product), error => console.error(error));
+      this.productsSersvice.getProductById(this.productId.toString()).subscribe(product => this.loadForm(product),
+        error => this.router.navigate(["/products"]));
     })
   }
 

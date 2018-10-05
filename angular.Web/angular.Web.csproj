@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
@@ -25,15 +26,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\account\IUserInfo.ts" />
+    <None Remove="ClientApp\src\app\order\order.ts" />
     <None Remove="ClientApp\src\app\products\product.ts" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <TypeScriptCompile Include="ClientApp\src\app\account\IUserInfo.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\order\order.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\products\product.ts" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\app\products\product.ts" />
+    <Folder Include="Controllers\Resources\Orders\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

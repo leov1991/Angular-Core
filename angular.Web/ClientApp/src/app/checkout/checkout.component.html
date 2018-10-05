@@ -1,0 +1,60 @@
+<div class="row">
+
+  <h3>Confirmar compra</h3>
+
+  <div *ngIf="errorMessage" class="alert alert-warning alert-dismissible col-md-4 col-md-offset-4" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible col-md-4 col-md-offset-4" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ successMessage }}
+  </div>
+  <br />
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio unitario</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let o of cartService.order.items">
+        <td>{{ o.productName }}</td>
+        <td>{{ o.quantity }}</td>
+        <td>{{ o.unitPrice|currency:'USD':"symbol" }}</td>
+        <td>{{ (o.unitPrice * o.quantity)|currency:'USD':"symbol" }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <br />
+  <br />
+  <br />
+  <hr />
+  <div class="col-md-4">
+    <table class="table table-condensed">
+      <tr>
+        <td>Subtotal</td>
+        <td>{{ cartService.order.subtotal |currency:'USD':"symbol" }}</td>
+      </tr>
+      <tr>
+        <td>Envío</td>
+        <td>$ 0.00</td>
+      </tr>
+      <tr>
+        <td>Total:</td>
+        <td>{{ cartService.order.subtotal |currency:'USD':"symbol" }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+<div class="row">
+
+  <button class="btn btn-success" (click)="onCheckout()">Completar compra</button>
+  <button class="btn btn-warning" (click)="onClearCart()">Limpiar carrito</button>
+  <a routerLink="/" class="btn btn-danger btn-spaced">Cancelar</a>
+</div>

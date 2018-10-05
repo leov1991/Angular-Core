@@ -1,126 +1,126 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using angular.Web.Controllers.Resources.Products;
+using angular.Web.Core.Repsoitories;
 using angular.Web.Models;
-using angular.Web.Persistence;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 namespace angular.Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsController : Controller
     {
-        private readonly AngularWebDbContext _context;
+        public IUnitOfWork _unitOfWork { get; }
 
-        public ProductsController(AngularWebDbContext context)
+        public ProductsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/Products
-        [HttpGet]
-        public IEnumerable<Product> GetProducts()
+        [HttpGet()]
+        public IActionResult GetProducts()
         {
-            return _context.Products;
+            var productsFromRepo = _unitOfWork.Products.GetAllProducts();
+
+            var products = Mapper.Map<IEnumerable<ProductDto>>(productsFromRepo);
+
+            return Ok(products);
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct([FromRoute] int id)
+        public IActionResult GetProduct(int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var productFromRepo = _unitOfWork.Products.GetProductById(id);
 
-            if (product == null)
-            {
+            if (null == productFromRepo)
                 return NotFound();
-            }
 
-            return Ok(product);
+            var product = Mapper.Map<ProductDto>(productFromRepo);
+            return Ok(productFromRepo);
         }
 
         // PUT: api/Products/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct([FromRoute] int id, [FromBody] Product product)
+        public IActionResult UpdateProduct(int id, [FromBody] ProductForUpdateDto product)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != product.Id)
-            {
+            if (null == product)
                 return BadRequest();
-            }
 
-            _context.Entry(product).State = EntityState.Modified;
+            if (product.Name == product.Description)
+                ModelState.AddModelError(nameof(ProductForCreationDto), "El nombre y la descripción no pueden ser iguales");
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            if (!ModelState.IsValid)
+                return new UnprocessableEntityObjectResult(ModelState);
+
+            var productFromRepo = _unitOfWork.Products.GetProductById(id);
+
+            if (null == productFromRepo)
+                return NotFound(); // Consider doing upserting
+
+            Mapper.Map(product, productFromRepo);
+
+            _unitOfWork.Products.UpdateProduct(productFromRepo);
+
+            if (!_unitOfWork.Complete())
+                throw new Exception($"Error actualizando el libro {productFromRepo.Id}");
 
             return NoContent();
         }
 
         // POST: api/Products
         [HttpPost]
-        public async Task<IActionResult> PostProduct([FromBody] Product product)
+        public IActionResult CreateProduct(ProductForCreationDto product)
         {
+            if (null == product)
+                return BadRequest();
+
+            if (product.Name == product.Description)
+                ModelState.AddModelError(nameof(ProductForCreationDto), "El nombre y la descripción no pueden ser iguales");
+
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                return new UnprocessableEntityObjectResult(ModelState);
 
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            var productEntity = Mapper.Map<Product>(product);
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            _unitOfWork.Products.AddProduct(productEntity);
+
+            if (!_unitOfWork.Complete())
+                throw new Exception($"Error guardando el producto {productEntity.Id}");
+
+            var productToReturn = Mapper.Map<ProductDto>(productEntity);
+
+            return CreatedAtAction("GetProduct", new { id = productToReturn.Id }, productToReturn);
         }
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct([FromRoute] int id)
+        public IActionResult DeleteProduct(int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
+            var product = _unitOfWork.Products.GetProductById(id);
+            if (null == product)
                 return NotFound();
-            }
 
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Products.DeleteProduct(product);
 
-            return Ok(product);
-        }
+            if (!_unitOfWork.Complete())
+                throw new Exception($"Error eliminando el poducto {id}");
 
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
+            return NoContent();
         }
     }
 }

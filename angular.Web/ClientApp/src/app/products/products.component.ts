@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { IProduct } from './product';
 import { ProductsService } from './products.service';
 import { error } from 'protractor';
+import { OrderItem } from '../order/order';
+import { CartService } from '../cart/cart.service';
 
 @Component({
   selector: 'app-products',
@@ -11,7 +13,7 @@ import { error } from 'protractor';
 export class ProductsComponent implements OnInit {
   productsList: IProduct[];
 
-  constructor(private productsService: ProductsService) { }
+  constructor(private productsService: ProductsService, private cartService: CartService) { }
 
   ngOnInit() {
     this.loadData();
@@ -27,5 +29,9 @@ export class ProductsComponent implements OnInit {
   delete(product: IProduct) {
     this.productsService.deleteProduct(product.id.toString())
       .subscribe(product => this.loadData(), error => console.error(error));
+  }
+
+  addProduct(product: IProduct) {
+    this.cartService.addToOrder(product);
   }
 }
